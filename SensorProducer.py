@@ -12,6 +12,7 @@ myFile = Path(file_path)
 
 #if file not exist or file empty
 if myFile.is_file() == False or os.stat(file_path).st_size == 0:
+  os.makedirs('logs', exist_ok=True)
 
   #initialize a new dictionary to be put in the log file
   data = {}
