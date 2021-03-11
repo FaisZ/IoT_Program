@@ -1,16 +1,26 @@
 import pandas as pd
+from endpoints import Controller
 
-file_path = 'JSON/sensor_data.json'
-sensor = pd.read_json(file_path)
+#to stream from endpoints
+class Default(Controller):
+  def GET(self):
+    return main()
 
-#the resulting array after normalizing the json
-res = pd.json_normalize(sensor["array"])
+def main():
+  file_path = 'JSON/sensor_data.json'
+  sensor = pd.read_json(file_path)
 
-#deleting unnecessary column
-del res['id']
+  #the resulting array after normalizing the json
+  res = pd.json_normalize(sensor["array"])
 
-#converting timestamp to datetime, then obtain the date and replace timestamp
-res['timestamp'] = pd.to_datetime(res['timestamp'], unit='ms').dt.date
+  #deleting unnecessary column
+  del res['id']
 
-#printing result grouped by roomArea and date
-print(res.groupby(['roomArea','timestamp']).agg(['min','max','mean','median']))
+  #converting timestamp to datetime, then obtain the date and replace timestamp
+  res['timestamp'] = pd.to_datetime(res['timestamp'], unit='ms').dt.date
+
+  grouped_res = res.groupby(['roomArea','timestamp']).agg(['min','max','mean','median'])
+  #printing result grouped by roomArea and date
+  print(grouped_res)
+
+  return grouped_res.to_json()
