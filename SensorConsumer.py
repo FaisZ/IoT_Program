@@ -6,18 +6,20 @@ file_path = 'logs/sensor_log.json'
 #main program loop
 while True:
   try:
-
+    #read and normalize log file
     sensor = pd.read_json(file_path)
-
     res = pd.json_normalize(sensor["array"])
+
+    #aggregate data and group by roomArea
     print(res.groupby(['roomArea']).agg(['min','max','mean','median']))
+
+    #show the average of all sensors
     print("All sensors average")
     print(res.agg(['min','max','mean','median']))
-    time.sleep(4)
 
-#average sensors value
-#loop every 15 minutes
-
+    #to simulate 15 minute streams
+    time.sleep(900)
+    
   #Stop when ctrl+c pressed
   except KeyboardInterrupt:
     print("Program stopped.")
