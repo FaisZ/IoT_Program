@@ -4,13 +4,14 @@ import matplotlib.pyplot as plt
 
 file_path = 'logs/sensor_log.json'
 
-
-fig, axs = plt.subplots(4)
-fig.suptitle('Temperature')
-axs[0].set_ylabel('Min')
-axs[1].set_ylabel('Max')
-axs[2].set_ylabel('Mean')
-axs[3].set_ylabel('Median')
+fig, axs = plt.subplots(2,2)
+fig.suptitle('Latest Sensor Data')
+axs[0,0].set_ylabel('Mean')
+axs[0,0].set_title("Temperature")
+axs[1,0].set_ylabel('Median')
+axs[0,1].set_ylabel('Mean')
+axs[0,1].set_title("Humidity")
+axs[1,1].set_ylabel('Median')
 
 #main program loop
 while True:
@@ -22,25 +23,33 @@ while True:
     #aggregate data and group by roomArea
     res = res.groupby(['roomArea']).agg(['min','max','mean','median'])
     print(res)
-    axs[0].bar(res.index,res["temperature"]["min"])
-    axs[1].bar(res.index,res["temperature"]["max"])
-    axs[2].bar(res.index,res["temperature"]["mean"])
-    axs[3].bar(res.index,res["temperature"]["median"])
-    plt.pause(3)
+    bars1 = axs[0,0].bar(res.index,res["temperature"]["mean"], color='mediumslateblue')
+    bars2 = axs[1,0].bar(res.index,res["temperature"]["median"], color='mediumslateblue')
+    bars3 = axs[0,1].bar(res.index,res["humidity"]["mean"], color='lightseagreen')
+    bars4 = axs[1,1].bar(res.index,res["humidity"]["median"], color='lightseagreen')
+
+    #pause to reload after new data has been obtained
+    plt.pause(400)
 
     #show the average of all sensors
     print("All sensors average")
     print(res.agg(['min','max','mean','median']))
 
     #to simulate 15 minute streams
-    time.sleep(2)
+    time.sleep(500)
+    bars1.remove()
+    bars2.remove()
+    bars3.remove()
+    bars4.remove()
     
   #Stop when ctrl+c pressed
   except KeyboardInterrupt:
     print("Program stopped.")
     break
 
-  #retrying of exception found
-  except:
-    print("Error occured. Retrying...")
+  #retrying if exception found
+  except Exception as e:
+    print("Error occured."+str(e))
+    print("Retrying in 5 seconds...")
+    time.sleep(5)
     continue
