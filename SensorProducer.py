@@ -30,9 +30,9 @@ while True:
 
       #data generation
       liveStream = {
-        'temperature': random.randint(70,100),
-        'humidity': random.randint(70,100),
-        'roomArea': 'roomArea'+str(random.randint(1,10))
+        'temperature': random.randint(0,100),
+        'humidity': random.randint(0,100),
+        'roomArea': 'room'+str(random.randint(1,10))
       }
       data["array"].append(liveStream)
       print(liveStream)
@@ -49,7 +49,9 @@ while True:
     print("Program stopped.")
     break
 
-  #retrying of exception found
-  except:
-    print("Error occured. Retrying...")
+  #retrying if exception found
+  except Exception as e:
+    print("Error occured."+str(e))
+    print("Retrying in 5 seconds...")
+    time.sleep(5)
     continue
