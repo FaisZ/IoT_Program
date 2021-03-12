@@ -42,7 +42,7 @@ while True:
       json.dump(data, logFile)
     
     #sleep to simulate 2 minutes push rate
-    time.sleep(4)
+    time.sleep(120)
 
   #Stop when ctrl+c pressed
   except KeyboardInterrupt:
